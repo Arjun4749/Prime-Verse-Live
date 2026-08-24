@@ -48,8 +48,9 @@ export const App: React.FC = () => {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <BrowserRouter>
+        <BrowserRouter basename="/Prime-Verse-Live">
           <ScrollToTop />
+
           <CinematicVideoBackground>
             <div className="min-h-screen flex flex-col font-sans text-gray-100 selection:bg-orange-500 selection:text-white">
               <HeaderNotice />
@@ -60,6 +61,7 @@ export const App: React.FC = () => {
                   <Route path="/" element={<Home />} />
                   <Route path="/tournaments" element={<Tournaments />} />
                   <Route path="/tournaments/:slug" element={<TournamentDetails />} />
+
                   <Route
                     path="/tournaments/:slug/register"
                     element={
@@ -68,6 +70,7 @@ export const App: React.FC = () => {
                       </ProtectedRoute>
                     }
                   />
+
                   <Route path="/leaderboard" element={<Leaderboard />} />
                   <Route path="/results" element={<Results />} />
                   <Route path="/winners" element={<Winners />} />
@@ -83,6 +86,7 @@ export const App: React.FC = () => {
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
+
                   <Route
                     path="/dashboard"
                     element={
@@ -91,6 +95,7 @@ export const App: React.FC = () => {
                       </ProtectedRoute>
                     }
                   />
+
                   <Route
                     path="/whatsapp"
                     element={
@@ -99,6 +104,7 @@ export const App: React.FC = () => {
                       </ProtectedRoute>
                     }
                   />
+
                   <Route
                     path="/admin"
                     element={
@@ -107,12 +113,14 @@ export const App: React.FC = () => {
                       </ProtectedRoute>
                     }
                   />
+
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
 
               <Footer />
             </div>
+
             <ToastContainer />
           </CinematicVideoBackground>
         </BrowserRouter>
