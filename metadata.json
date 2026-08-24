@@ -1,0 +1,8 @@
+{
+  "name": "PRIME verse",
+  "description": "India\u0027s premier independent community BGMI esports tournament platform with real-time leaderboards, team management, match rooms, and verified winner prize distribution.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

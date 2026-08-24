@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "users": {
+      "title": "User Accounts",
+      "description": "User profiles for both BGMI players and platform administrators",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique user ID" },
+        "email": { "type": "string", "description": "Account email address" },
+        "name": { "type": "string", "description": "Full name or display name" },
+        "game_name": { "type": "string", "description": "In-Game Name (IGN) in BGMI" },
+        "bgmi_id": { "type": "string", "description": "BGMI Character ID / Character Number" },
+        "role": { "type": "string", "description": "Account role: Player or Admin" },
+        "team_id": { "type": "string", "description": "Associated team ID" },
+        "team_name": { "type": "string", "description": "Name of squad" },
+        "wallet_balance": { "type": "number", "description": "Account wallet balance for match entry fees and winnings" },
+        "status": { "type": "string", "description": "Account status: Active or Suspended" },
+        "avatar_url": { "type": "string", "description": "Profile picture URL" },
+        "phone": { "type": "string", "description": "Contact phone number" },
+        "created_at": { "type": "string", "description": "ISO timestamp of account registration" }
+      },
+      "required": ["id", "email", "name", "role"]
+    },
+    "teams": {
+      "title": "Squad Teams",
+      "description": "Registered BGMI squad teams",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "tag": { "type": "string" },
+        "captain_id": { "type": "string" },
+        "logo_url": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "name", "captain_id"]
+    },
+    "tournaments": {
+      "title": "Tournaments",
+      "description": "Esports tournament events",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "prize_pool": { "type": "number" },
+        "status": { "type": "string" },
+        "map": { "type": "string" }
+      },
+      "required": ["id", "title"]
+    },
+    "registrations": {
+      "title": "Tournament Registrations",
+      "description": "Squad registrations for tournaments and slot passes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tournament_id": { "type": "string" },
+        "team_id": { "type": "string" },
+        "captain_id": { "type": "string" },
+        "slot_number": { "type": "number" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "tournament_id", "team_id"]
+    }
+  }
+}

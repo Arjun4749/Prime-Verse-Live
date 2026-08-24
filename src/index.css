@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #0a0a0a;
+    color: #f4f4f5;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #222222;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4ff33;
+}
+
+/* Bento Theme Custom Classes */
+.bg-bento-canvas {
+  background-color: #0a0a0a;
+}
+
+.bg-bento-card {
+  background-color: #111111;
+  border-color: #222222;
+}
+
+.bg-bento-subcard {
+  background-color: #1a1a1a;
+  border-color: #222222;
+}
+
+.bg-bento-lime {
+  background-color: #d4ff33;
+  color: #000000;
+}
+
+.text-bento-lime {
+  color: #d4ff33;
+}
+
+.border-bento-lime {
+  border-color: #d4ff33;
+}
+
+/* Rank Badge Entrance Animations */
+@keyframes rankBadgePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(8px) rotate(-6deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.18) translateY(-2px) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes rankGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(234, 179, 8, 0.85), 0 0 32px rgba(251, 191, 36, 0.4);
+  }
+}
+
+.animate-rank-badge {
+  animation: rankBadgePop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-gold-glow {
+  animation: rankGlowPulse 2.8s ease-in-out infinite;
+}
+
+/* Registration Success Animations */
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.25) rotate(10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes modalBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulseGlowLime {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 255, 51, 0.35), inset 0 0 15px rgba(212, 255, 51, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(212, 255, 51, 0.75), inset 0 0 25px rgba(212, 255, 51, 0.4);
+  }
+}
+
+.animate-checkmark-pop {
+  animation: checkmarkPop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.animate-modal-pop {
+  animation: modalBounceIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-lime-glow {
+  animation: pulseGlowLime 2s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   HIGH CONTRAST ACCESSIBILITY MODE OVERRIDES
+   ========================================================================== */
+html.high-contrast {
+  color-scheme: dark;
+}
+
+html.high-contrast body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* High Contrast Card & Subcard Containers */
+html.high-contrast .bg-bento-canvas {
+  background-color: #000000 !important;
+}
+
+html.high-contrast .bg-bento-card,
+html.high-contrast [class*="bg-[#0"],
+html.high-contrast [class*="bg-[#1"],
+html.high-contrast [class*="bg-black"],
+html.high-contrast [class*="bg-gray-9"] {
+  background-color: #050505 !important;
+  border-color: #ffffff !important;
+}
+
+/* High Contrast Text Enhancements */
+html.high-contrast p,
+html.high-contrast span,
+html.high-contrast div,
+html.high-contrast li {
+  color: #ffffff;
+}
+
+html.high-contrast .text-gray-400,
+html.high-contrast .text-gray-500,
+html.high-contrast .text-zinc-400,
+html.high-contrast .text-zinc-500 {
+  color: #e2e8f0 !important;
+}
+
+html.high-contrast .text-orange-400,
+html.high-contrast .text-[#D4FF33],
+html.high-contrast .text-bento-lime {
+  color: #ffff00 !important;
+  font-weight: 800 !important;
+}
+
+/* High Contrast Buttons & Interactive Controls */
+html.high-contrast button,
+html.high-contrast input,
+html.high-contrast select,
+html.high-contrast textarea {
+  border-width: 2px !important;
+  border-color: #ffff00 !important;
+}
+
+html.high-contrast input::placeholder,
+html.high-contrast textarea::placeholder {
+  color: #a1a1aa !important;
+}
+
+html.high-contrast button:focus-visible,
+html.high-contrast input:focus-visible,
+html.high-contrast a:focus-visible {
+  outline: 3px solid #ffff00 !important;
+  outline-offset: 2px !important;
+}
+
+/* High Contrast Badges & Accent Pill Overrides */
+html.high-contrast .bg-[#D4FF33],
+html.high-contrast .bg-[#d4ff33],
+html.high-contrast .bg-orange-500 {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  font-weight: 900 !important;
+  border: 2px solid #ffffff !important;
+}
+
+/* High Contrast Borders */
+html.high-contrast .border-gray-800,
+html.high-contrast .border-gray-700,
+html.high-contrast .border-[#222222],
+html.high-contrast [class*="border-"] {
+  border-color: #ffffff !important;
+}
+

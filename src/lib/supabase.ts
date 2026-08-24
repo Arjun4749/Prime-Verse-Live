@@ -1,0 +1,23 @@
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+const env = (import.meta as unknown as { env: Record<string, string> }).env || {};
+const supabaseUrl = env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || '';
+export const isSupabaseConfigured = Boolean(
+  supabaseUrl &&
+    supabaseAnonKey &&
+    supabaseUrl !== 'https://your-project.supabase.co' &&
+    supabaseAnonKey !== 'your-anon-key'
+);
+
+let client: SupabaseClient | null = null;
+
+if (isSupabaseConfigured) {
+  try {
+    client = createClient(supabaseUrl, supabaseAnonKey);
+  } catch (err) {
+    console.warn('Supabase initialization warning:', err);
+  }
+}
+
+export const supabase = client;

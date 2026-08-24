@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if document belongs to authenticated user
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users Collection (Players & Admins)
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Teams Collection
+    match /teams/{teamId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Tournaments Collection
+    match /tournaments/{tournamentId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Matches Collection
+    match /matches/{matchId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Registrations Collection
+    match /registrations/{registrationId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Notifications Collection
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Match Results Collection
+    match /match_results/{resultId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Default rule for all other documents
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
