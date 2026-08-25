@@ -22,7 +22,7 @@ export const Login: React.FC = () => {
   const queryParams = new URLSearchParams(location.search);
 
   const redirectParam =
-    queryParams.get('redirect') || location.state?.from;
+    queryParams.get('redirect') || location.state?.from || null;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,19 +37,23 @@ export const Login: React.FC = () => {
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const [demoStarted, setDemoStarted] = useState(false);
-
   const handleDemoLogin = (role: 'player' | 'admin') => {
     setErrorMsg(null);
     setIsLoading(true);
     setRoleSelect(role);
 
-    // Demo-only session.
-    // No real authentication or personal data is stored.
-    sessionStorage.setItem(DEMO_SESSION_KEY, 'true');
-    sessionStorage.setItem(DEMO_ROLE_KEY, role);
+    /*
+     * DEMO AUTHENTICATION
+     *
+     * We use localStorage instead of sessionStorage so the
+     * demo login survives page reloads and navigation.
+     */
+    localStorage.setItem(DEMO_SESSION_KEY, 'true');
+    localStorage.setItem(DEMO_ROLE_KEY, role);
 
-    // Keep the existing local demo user system working.
+    /*
+     * Keep the existing local demo user system working.
+     */
     try {
       const current = dbStore.getCurrentUser();
 
@@ -78,51 +82,74 @@ export const Login: React.FC = () => {
       console.warn('Demo user setup skipped:', error);
     }
 
+    /*
+     * Small visual delay so the demo login feels intentional.
+     */
     setTimeout(() => {
       setIsLoading(false);
-      setDemoStarted(true);
-
-      if (role === 'admin') {
-        setRedirectingMessage(
-          'Demo Admin Mode activated. Opening Admin Dashboard...'
-        );
-      } else {
-        setRedirectingMessage(
-          'Demo Player Mode activated. Opening Player Dashboard...'
-        );
-      }
+      setRedirectingMessage(
+        role === 'admin'
+          ? 'Demo Admin Mode activated. Opening Admin Dashboard...'
+          : 'Demo Player Mode activated. Opening Player Dashboard...'
+      );
 
       setTimeout(() => {
-        const destination =
-          role === 'admin'
-            ? redirectParam &&
-              redirectParam.startsWith('/admin')
-              ? redirectParam
-              : '/admin'
-            : redirectParam &&
-              !redirectParam.startsWith('/admin')
-            ? redirectParam
-            : '/dashboard';
+        let destination = '/dashboard';
 
-        navigate(destination);
+        /*
+         * If ProtectedRoute originally sent the user here from
+         * Team Registration, return them to that exact page.
+         */
+        if (redirectParam) {
+          const safeRedirect = redirectParam.startsWith('/')
+            ? redirectParam
+            : null;
+
+          if (safeRedirect) {
+            /*
+             * Admin users should stay inside admin pages.
+             * Player users should not be sent into /admin.
+             */
+            if (
+              role === 'admin' &&
+              safeRedirect.startsWith('/admin')
+            ) {
+              destination = safeRedirect;
+            } else if (
+              role === 'player' &&
+              !safeRedirect.startsWith('/admin')
+            ) {
+              destination = safeRedirect;
+            }
+          }
+        }
+
+        /*
+         * Default destinations.
+         */
+        if (role === 'admin' && destination === '/dashboard') {
+          destination = '/admin';
+        }
+
+        navigate(destination, { replace: true });
       }, 900);
     }, 500);
   };
 
-  const handleEmailDemoLogin = (e: React.FormEvent) => {
+  const handleEmailDemoLogin = (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
     setErrorMsg(null);
 
     /*
-      This is a portfolio demonstration.
-
-      The email and password fields are UI-only.
-      They are NOT sent to Supabase/Firebase.
-      No account is created.
-      No personal information is stored.
-    */
-
+     * This is a demonstration login.
+     *
+     * Email/password are NOT validated.
+     * No real account is created.
+     * No credentials are sent to a backend.
+     */
     handleDemoLogin(roleSelect);
   };
 
@@ -130,18 +157,17 @@ export const Login: React.FC = () => {
     setErrorMsg(null);
 
     /*
-      Google login is also presentation-only in this demo.
-      No Google account is accessed.
-    */
-
+     * Google button is also demo-only.
+     */
     handleDemoLogin(roleSelect);
   };
 
   return (
     <div className="max-w-md mx-auto px-4 py-12 space-y-6">
 
-      {/* Page Heading */}
+      {/* PAGE HEADING */}
       <div className="text-center space-y-2">
+
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold uppercase tracking-widest">
           <Sparkles className="w-3 h-3" />
           Portfolio Demo
@@ -155,18 +181,22 @@ export const Login: React.FC = () => {
           Explore the player dashboard, tournaments, matches and
           admin interface.
         </p>
+
       </div>
 
       <Card glow="orange" className="p-6 space-y-5">
 
         {/* DEMO NOTICE */}
         <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 p-4">
+
           <div className="flex items-start gap-3">
+
             <div className="mt-0.5 text-orange-400">
               <Sparkles className="w-4 h-4" />
             </div>
 
             <div className="space-y-1">
+
               <p className="text-xs font-extrabold uppercase tracking-wide text-orange-300">
                 Demo Version
               </p>
@@ -174,31 +204,37 @@ export const Login: React.FC = () => {
               <p className="text-[11px] leading-relaxed text-gray-300">
                 This website is a portfolio demonstration.
                 Login is simulated for presentation purposes.
+
                 <strong className="text-white">
                   {' '}
                   No real account, password, or personal data is
                   stored.
                 </strong>
               </p>
+
             </div>
+
           </div>
+
         </div>
 
-        {/* Error */}
+        {/* ERROR */}
         {errorMsg && (
           <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400">
             {errorMsg}
           </div>
         )}
 
-        {/* Google Demo Button */}
+        {/* GOOGLE DEMO LOGIN */}
         <div>
+
           <button
             type="button"
             onClick={handleGoogleDemoLogin}
             disabled={isLoading}
             className="w-full py-3 px-4 bg-white hover:bg-gray-100 text-gray-900 font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg shadow-white/5 disabled:opacity-50 cursor-pointer"
           >
+
             {isLoading ? (
               <>
                 <div className="w-4 h-4 rounded-full border-2 border-gray-400 border-t-gray-900 animate-spin" />
@@ -214,14 +250,17 @@ export const Login: React.FC = () => {
                     fill="#4285F4"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                   />
+
                   <path
                     fill="#34A853"
                     d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
                   />
+
                   <path
                     fill="#FBBC05"
                     d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
                   />
+
                   <path
                     fill="#EA4335"
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
@@ -231,15 +270,18 @@ export const Login: React.FC = () => {
                 Continue with Google
               </>
             )}
+
           </button>
 
           <p className="text-center text-[9px] text-gray-600 mt-2 uppercase tracking-wider">
             Demo interaction only
           </p>
+
         </div>
 
-        {/* Divider */}
+        {/* DIVIDER */}
         <div className="relative flex py-1 items-center">
+
           <div className="flex-grow border-t border-gray-800" />
 
           <span className="flex-shrink mx-3 text-[10px] text-gray-500 font-bold uppercase tracking-widest">
@@ -247,15 +289,18 @@ export const Login: React.FC = () => {
           </span>
 
           <div className="flex-grow border-t border-gray-800" />
+
         </div>
 
+        {/* LOGIN FORM */}
         <form
           onSubmit={handleEmailDemoLogin}
           className="space-y-4 text-xs"
         >
 
-          {/* Role */}
+          {/* ROLE */}
           <div>
+
             <label className="block text-gray-300 font-bold mb-1.5">
               Select Demo Mode
             </label>
@@ -294,10 +339,12 @@ export const Login: React.FC = () => {
               </button>
 
             </div>
+
           </div>
 
-          {/* Email */}
+          {/* EMAIL */}
           <div>
+
             <label className="block text-gray-300 font-bold mb-1">
               Demo Email
             </label>
@@ -313,10 +360,12 @@ export const Login: React.FC = () => {
             <p className="text-[9px] text-gray-600 mt-1">
               Optional — used only for the visual demo.
             </p>
+
           </div>
 
-          {/* Password */}
+          {/* PASSWORD */}
           <div>
+
             <label className="block text-gray-300 font-bold mb-1">
               Demo Password
             </label>
@@ -332,10 +381,12 @@ export const Login: React.FC = () => {
             <p className="text-[9px] text-gray-600 mt-1">
               No password is validated or stored.
             </p>
+
           </div>
 
-          {/* Forgot Password */}
+          {/* FORGOT PASSWORD */}
           <div className="flex justify-between items-center text-[11px]">
+
             <Link
               to="/forgot-password"
               className="text-orange-400 hover:underline"
@@ -346,9 +397,10 @@ export const Login: React.FC = () => {
             <span className="text-gray-600">
               Demo Environment
             </span>
+
           </div>
 
-          {/* Submit */}
+          {/* SUBMIT */}
           <Button
             variant="primary"
             size="lg"
@@ -365,8 +417,9 @@ export const Login: React.FC = () => {
 
         </form>
 
-        {/* Footer */}
+        {/* FOOTER */}
         <div className="text-center pt-2 border-t border-gray-800/80 text-[11px] text-gray-400">
+
           Want to explore the site?
 
           <Link
@@ -375,11 +428,12 @@ export const Login: React.FC = () => {
           >
             Return Home
           </Link>
+
         </div>
 
       </Card>
 
-      {/* Redirecting Overlay */}
+      {/* REDIRECTING OVERLAY */}
       {redirectingMessage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
 
@@ -390,6 +444,7 @@ export const Login: React.FC = () => {
             </div>
 
             <div>
+
               <h3 className="text-base font-bold text-white">
                 Demo Mode Activated
               </h3>
@@ -397,6 +452,7 @@ export const Login: React.FC = () => {
               <p className="text-xs text-orange-300 font-medium mt-1">
                 {redirectingMessage}
               </p>
+
             </div>
 
             <div className="w-full bg-black/60 rounded-full h-1.5 overflow-hidden border border-white/10">
