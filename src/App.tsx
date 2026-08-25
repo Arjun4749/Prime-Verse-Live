@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
@@ -51,10 +51,7 @@ export const App: React.FC = () => {
   return (
     <ThemeProvider>
       <ToastProvider>
-
-        {/* GitHub Pages project path */}
-        <BrowserRouter basename="/Prime-Verse-Live">
-
+        <HashRouter>
           <ScrollToTop />
 
           <CinematicVideoBackground>
@@ -68,7 +65,7 @@ export const App: React.FC = () => {
 
                   {/* =========================
                       PUBLIC PAGES
-                  ========================= */}
+                  ========================== */}
 
                   <Route path="/" element={<Home />} />
 
@@ -144,7 +141,7 @@ export const App: React.FC = () => {
 
                   {/* =========================
                       AUTHENTICATION
-                  ========================= */}
+                  ========================== */}
 
                   <Route
                     path="/login"
@@ -163,7 +160,7 @@ export const App: React.FC = () => {
 
                   {/* =========================
                       PROTECTED PAGES
-                  ========================= */}
+                  ========================== */}
 
                   <Route
                     path="/tournaments/:slug/register"
@@ -202,8 +199,8 @@ export const App: React.FC = () => {
                   />
 
                   {/* =========================
-                      404 PAGE
-                  ========================= */}
+                      404
+                  ========================== */}
 
                   <Route
                     path="*"
@@ -220,9 +217,7 @@ export const App: React.FC = () => {
             <ToastContainer />
 
           </CinematicVideoBackground>
-
-        </BrowserRouter>
-
+        </HashRouter>
       </ToastProvider>
     </ThemeProvider>
   );
