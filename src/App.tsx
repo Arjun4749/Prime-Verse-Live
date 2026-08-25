@@ -51,7 +51,10 @@ export const App: React.FC = () => {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <BrowserRouter>
+
+        {/* GitHub Pages project path */}
+        <BrowserRouter basename="/Prime-Verse-Live">
+
           <ScrollToTop />
 
           <CinematicVideoBackground>
@@ -63,47 +66,105 @@ export const App: React.FC = () => {
               <main className="flex-1">
                 <Routes>
 
-                  {/* Public Pages */}
+                  {/* =========================
+                      PUBLIC PAGES
+                  ========================= */}
+
                   <Route path="/" element={<Home />} />
-                  <Route path="/tournaments" element={<Tournaments />} />
+
+                  <Route
+                    path="/tournaments"
+                    element={<Tournaments />}
+                  />
+
                   <Route
                     path="/tournaments/:slug"
                     element={<TournamentDetails />}
                   />
 
-                  <Route path="/leaderboard" element={<Leaderboard />} />
-                  <Route path="/results" element={<Results />} />
-                  <Route path="/winners" element={<Winners />} />
+                  <Route
+                    path="/leaderboard"
+                    element={<Leaderboard />}
+                  />
+
+                  <Route
+                    path="/results"
+                    element={<Results />}
+                  />
+
+                  <Route
+                    path="/winners"
+                    element={<Winners />}
+                  />
 
                   <Route
                     path="/winners/:id"
                     element={<WinnerDetails />}
                   />
 
-                  <Route path="/media" element={<Media />} />
-                  <Route path="/youtube" element={<YouTubePage />} />
+                  <Route
+                    path="/media"
+                    element={<Media />}
+                  />
 
-                  <Route path="/news" element={<News />} />
+                  <Route
+                    path="/youtube"
+                    element={<YouTubePage />}
+                  />
+
+                  <Route
+                    path="/news"
+                    element={<News />}
+                  />
 
                   <Route
                     path="/news/:slug"
                     element={<NewsDetails />}
                   />
 
-                  <Route path="/rules" element={<Rules />} />
-                  <Route path="/faq" element={<FAQPage />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
+                  <Route
+                    path="/rules"
+                    element={<Rules />}
+                  />
 
-                  {/* Authentication */}
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
+                  <Route
+                    path="/faq"
+                    element={<FAQPage />}
+                  />
+
+                  <Route
+                    path="/about"
+                    element={<About />}
+                  />
+
+                  <Route
+                    path="/contact"
+                    element={<Contact />}
+                  />
+
+                  {/* =========================
+                      AUTHENTICATION
+                  ========================= */}
+
+                  <Route
+                    path="/login"
+                    element={<Login />}
+                  />
+
+                  <Route
+                    path="/signup"
+                    element={<Signup />}
+                  />
+
                   <Route
                     path="/forgot-password"
                     element={<ForgotPassword />}
                   />
 
-                  {/* Protected Pages */}
+                  {/* =========================
+                      PROTECTED PAGES
+                  ========================= */}
+
                   <Route
                     path="/tournaments/:slug/register"
                     element={
@@ -140,8 +201,14 @@ export const App: React.FC = () => {
                     }
                   />
 
-                  {/* 404 */}
-                  <Route path="*" element={<NotFound />} />
+                  {/* =========================
+                      404 PAGE
+                  ========================= */}
+
+                  <Route
+                    path="*"
+                    element={<NotFound />}
+                  />
 
                 </Routes>
               </main>
@@ -153,7 +220,9 @@ export const App: React.FC = () => {
             <ToastContainer />
 
           </CinematicVideoBackground>
+
         </BrowserRouter>
+
       </ToastProvider>
     </ThemeProvider>
   );
