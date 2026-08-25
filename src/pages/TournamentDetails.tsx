@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Trophy, Calendar, MapPin, Users, ShieldCheck, Clock, Swords, BookOpen, Key, Award, AlertCircle, Zap, Crown, Flame, CheckCircle2, MessageSquare, ExternalLink, Share2 } from 'lucide-react';
 import { dbStore } from '../services/dbStore';
-import { getCurrentSupabaseUser } from '../lib/supabaseAuth';
+import { isDemoAuthenticated } from '../components/auth/ProtectedRoute';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -79,17 +79,21 @@ export const TournamentDetails: React.FC = () => {
               <Button
                 variant="primary"
                 size="lg"
-                onClick={async () => {
-                  const user = await getCurrentSupabaseUser();
+               onClick={() => {
+                const isAuthenticated = isDemoAuthenticated();
 
-                  if (!user) {
-                    navigate('/login', { replace: true });
+                  if (!isAuthenticated) {
+                    navigate(
+                      `/login?redirect=${encodeURIComponent(
+                        `/tournaments/${tournament.slug}/register`
+                          )}`,
+                      { replace: true }
+                    );
                     return;
                   }
 
                   navigate(`/tournaments/${tournament.slug}/register`);
                 }}
-              >
                 <Swords className="w-5 h-5" /> REGISTER YOUR TEAM
               </Button>
             ) : (
