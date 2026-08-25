@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Users, Shield, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
 import { dbStore } from '../services/dbStore';
-import { getCurrentSupabaseUser } from '../lib/supabaseAuth';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { RegistrationSuccessModal } from '../components/tournament/RegistrationSuccessModal';
@@ -11,44 +10,28 @@ export const TeamRegistration: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 
-  const [authChecking, setAuthChecking] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const DEMO_SESSION_KEY = 'prime_verse_demo_session';
 
-  useEffect(() => {
-    let mounted = true;
+const [authChecking, setAuthChecking] = useState(true);
+const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const checkAuth = async () => {
-      try {
-        const user = await getCurrentSupabaseUser();
+useEffect(() => {
+  const demoSession =
+    sessionStorage.getItem(DEMO_SESSION_KEY) === 'true';
 
-        if (!mounted) return;
+  if (demoSession) {
+    setIsAuthenticated(true);
+  } else {
+    navigate('/login', {
+      replace: true,
+      state: {
+        from: `/tournaments/${slug}/register`,
+      },
+    });
+  }
 
-        if (user) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          navigate('/login', { replace: true });
-        }
-      } catch (error) {
-        console.error('Registration authentication check failed:', error);
-
-        if (mounted) {
-          setIsAuthenticated(false);
-          navigate('/login', { replace: true });
-        }
-      } finally {
-        if (mounted) {
-          setAuthChecking(false);
-        }
-      }
-    };
-
-    checkAuth();
-
-    return () => {
-      mounted = false;
-    };
-  }, [navigate]);
+  setAuthChecking(false);
+}, [navigate, slug]);
 
   const tournament = dbStore.getTournamentBySlug(slug || '');
   const currentUser = dbStore.getCurrentUser();
